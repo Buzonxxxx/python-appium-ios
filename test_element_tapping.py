@@ -9,11 +9,11 @@ from appium.webdriver.common.touch_action import TouchAction
 apk_path = str(Path.cwd() / "app/MVCTodo.app")
 
 capabilities = {
-    'deviceName': 'iPhone 12',
+    'deviceName': 'iPhone 15',
     'platformName': 'iOS',
     'automationName': 'xcuitest',
-    'platformVersion': '14.5',
-    'udid': '85AB259A-A605-4B18-BA95-BB3A3808EDAE',
+    'platformVersion': '17.0.1',
+    'udid': '219F6608-97BB-4A7A-8362-8733D9EE0C8C',
     'app': apk_path
 }
 appium_server_url = 'http://localhost:4723'
