@@ -46,6 +46,47 @@
   2. Open desktop Safari and enable developer mode: Settings > Advanced > Check "Show features for web developers"
   3. Go to desktop Safari's developer menu, find your device and open the web in Safari
   4. Check the web elements
+
+## Parallel Execution
+1. Run `appium -p 4724 --driver-xcuitest-webdriveragent-port=8201`
+2. Run `appium -p 4725 --driver-xcuitest-webdriveragent-port=8200`
+3. Install `pytest-xdist`
+4. Add `addopts = -n2` in `pytest.ini`
+5. Update `conftest.py`
+    ```pycon
+    @pytest.fixture(params=["device1", "device2"], scope="function")
+    def appium_driver(request):
+        if request.param == "device1":
+            capabilities = {
+                'deviceName': 'SDET-iPhone12-red',
+                'platformName': 'iOS',
+                'automationName': 'xcuitest',
+                'platformVersion': '17.1',
+                'udid': '00008101-000C31160E80001E',
+                'bundleId': 'com.louis.IntegrationApp'
+            }
+            driver = webdriver.Remote('http://localhost:4724', options=XCUITestOptions().load_capabilities(capabilities))
+        if request.param == "device2":
+            capabilities = {
+                'deviceName': 'iPhone 15',
+                'platformName': 'iOS',
+                'automationName': 'xcuitest',
+                'platformVersion': '17.0.1',
+                'udid': '219F6608-97BB-4A7A-8362-8733D9EE0C8C',
+                'bundleId': 'com.louis.IntegrationApp'
+            }
+            driver = webdriver.Remote('http://localhost:4725', options=XCUITestOptions().load_capabilities(capabilities))
+        yield driver
+        time.sleep(2)
+        driver.quit()
+    ```
+6. Run the test
+    ```pycon
+    def test_contacts(appium_driver):
+        driver = appium_driver
+        driver.implicitly_wait(10)
+        driver.find_element(by=AppiumBy.ID, value='Attributes').click()
+    ```
 ## Snippets
 - Swipe left to find Settings App
 ```pycon
